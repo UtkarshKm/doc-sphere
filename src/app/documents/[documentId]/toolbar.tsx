@@ -1,12 +1,19 @@
 "use client";
 import {cn} from "@/lib/utils";
 import {useEditorStore} from "@/store/use-editor-store";
+import {Separator} from "@/components/ui/separator";
 
 import {
+	BoldIcon,
+	ItalicIcon,
+	ListTodoIcon,
 	LucideIcon,
+	MessageSquarePlusIcon,
 	PrinterIcon,
 	Redo2Icon,
+	RemoveFormattingIcon,
 	SpellCheckIcon,
+	UnderlineIcon,
 	Undo2Icon,
 } from "lucide-react";
 
@@ -73,10 +80,101 @@ export function ToolBar() {
 				},
 			},
 		],
+		[
+			{
+				label: "Bold",
+				icon: BoldIcon,
+				onclick: () => editor?.chain().focus().toggleBold().run(),
+				isActive: editor?.isActive("bold"),
+			},
+			{
+				label: "Italic",
+				icon: ItalicIcon,
+				isActive: editor?.isActive("italic"),
+				onclick: () => editor?.chain().focus().toggleItalic().run(),
+			},
+			{
+				label: "Underline",
+				icon: UnderlineIcon,
+				isActive: editor?.isActive("underline"),
+				onclick: () => editor?.chain().focus().toggleUnderline().run(),
+			},
+		],
+		[
+			{
+				label: "Comment",
+				icon: MessageSquarePlusIcon,
+				onclick: () => console.log("message "),
+				isActive: false,
+			},
+			{
+				label: "ListTodo",
+				icon: ListTodoIcon,
+				onclick: () =>  editor?.chain().focus().toggleTaskList().run(),
+				isActive: editor?.isActive("taskList"),
+			},
+			{
+				label: "Remove Formatting",
+				icon: RemoveFormattingIcon,
+				onclick: () =>  editor?.chain().focus().unsetAllMarks().run(),
+				
+			},
+			
+		],
 	];
 	return (
 		<div className="bg-[#f1f4f9] px-2.5 py-0.5 rounded-[24px] flex items-center gap-x-0.5 overflow-x-auto  ">
 			{sections[0].map((item) => (
+				<ToolBarButton
+					key={item.label}
+					{...item}
+				/>
+			))}
+
+			<Separator
+				orientation="vertical"
+				className="!h-6  bg-neutral-300 "
+			/>
+
+			{/* font family */}
+			<Separator
+				orientation="vertical"
+				className="!h-6  bg-neutral-300 "
+			/>
+			{/* heading */}
+			<Separator
+				orientation="vertical"
+				className="!h-6  bg-neutral-300 "
+			/>
+			{/* front size */}
+			<Separator
+				orientation="vertical"
+				className="!h-6  bg-neutral-300 "
+			/>
+			{sections[1].map((item) => (
+				<ToolBarButton
+					key={item.label}
+					{...item}
+				/>
+			))}
+			<Separator
+				orientation="vertical"
+				className="!h-6  bg-neutral-300 "
+			/>
+
+			{/* text color
+				highlight color */}
+
+			<Separator
+				orientation="vertical"
+				className="!h-6  bg-neutral-300 "
+			/>
+			{/* link
+			image
+			algin
+			line hight 
+			list */}
+			{sections[2].map((item) => (
 				<ToolBarButton
 					key={item.label}
 					{...item}
