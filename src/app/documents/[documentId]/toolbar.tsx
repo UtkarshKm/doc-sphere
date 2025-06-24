@@ -106,21 +106,25 @@ const AlignButton = () => {
 			label: "Align Left",
 			value: "left",
 			icon: AlignLeftIcon,
+			isActive: editor?.isActive({textAlign: "left"}),
 		},
 		{
 			label: "Align Center",
 			value: "center",
 			icon: AlignCenterIcon,
+			isActive: editor?.isActive({textAlign: "center"}),
 		},
 		{
 			label: "Align Right",
 			value: "right",
 			icon: AlignRightIcon,
+			isActive: editor?.isActive({textAlign: "right"}),
 		},
 		{
 			label: "Align Justify",
 			value: "justify",
 			icon: AlignJustifyIcon,
+			isActive: editor?.isActive({textAlign: "justify"}),
 		},
 	];
 
@@ -132,11 +136,14 @@ const AlignButton = () => {
 				</button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="p-1 ">
-				{alignment.map(({label, value, icon: Icon}) => (
+				{alignment.map(({label, value, icon: Icon, isActive}) => (
 					<DropdownMenuItem
 						key={label}
 						onClick={() => editor?.chain().focus().setTextAlign(value).run()}
-						className="cursor-pointer py-2"
+						className={cn(
+							"cursor-pointer py-2",
+							isActive && "bg-neutral-200/80"
+						)}
 					>
 						<div className="flex items-center justify-between w-full">
 							<Icon className="mr-2" />
