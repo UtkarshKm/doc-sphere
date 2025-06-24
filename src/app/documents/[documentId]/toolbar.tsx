@@ -7,6 +7,7 @@ import {
 	BoldIcon,
 	CheckIcon,
 	ChevronDownIcon,
+	HighlighterIcon,
 	ItalicIcon,
 	ListTodoIcon,
 	LucideIcon,
@@ -27,6 +28,68 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import { CompactPicker, type ColorResult } from "react-color";
+
+const TextColorButton = () => {
+	const {editor} = useEditorStore();
+	const currentColor = editor?.getAttributes("textStyle")?.color || "#000000";
+
+	const onChange = ( color : ColorResult) => {
+		editor?.chain().focus().setColor(color.hex).run();
+	}
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<button className="h-7 min-w-7 flex-col shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors">
+				<span className="text-sm">
+					A
+				</span>
+				<div className="h-0.5 w-full" style={{backgroundColor: currentColor}}></div>
+				</button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className="border-0">
+				<CompactPicker
+				color={currentColor}
+				onChange={onChange}
+				/>
+
+			</DropdownMenuContent>
+		</DropdownMenu>
+	)
+
+}
+
+const HighLightButton = () => {
+	const {editor} = useEditorStore();
+	const currentColor = editor?.getAttributes("highlight")?.color || "#ffffff";
+
+	const onChange = ( color : ColorResult) => {
+		editor?.chain().focus().setHighlight({color: color.hex}).run();
+	}
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<button className="h-7 min-w-7 flex-col shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors">
+				<HighlighterIcon className="size-4" />
+				
+				</button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className="border-0">
+				<CompactPicker
+				color={currentColor}
+				onChange={onChange}
+				/>
+
+			</DropdownMenuContent>
+		</DropdownMenu>
+	)
+
+}
+
+
 
 const HeadingButton = () => {
 	const {editor} = useEditorStore();
@@ -291,6 +354,8 @@ export function ToolBar() {
 	];
 	return (
 		<div className="bg-[#f1f4f9] px-2.5 py-0.5 rounded-[24px] flex items-center gap-x-0.5 overflow-x-auto  ">
+
+			{/* undo redo print spell check */}
 			{sections[0].map((item) => (
 				<ToolBarButton
 					key={item.label}
@@ -316,10 +381,12 @@ export function ToolBar() {
 				className="!h-6  bg-neutral-300 "
 			/>
 			{/* front size */}
+
 			<Separator
 				orientation="vertical"
 				className="!h-6  bg-neutral-300 "
 			/>
+			{/* bold italic underline */}
 			{sections[1].map((item) => (
 				<ToolBarButton
 					key={item.label}
@@ -334,6 +401,9 @@ export function ToolBar() {
 			{/* text color
 				highlight color */}
 
+				<TextColorButton />
+				<HighLightButton />
+
 			<Separator
 				orientation="vertical"
 				className="!h-6  bg-neutral-300 "
@@ -343,6 +413,8 @@ export function ToolBar() {
 			algin
 			line hight 
 			list */}
+
+			{/* comment list-todo remove-formatting */}
 			{sections[2].map((item) => (
 				<ToolBarButton
 					key={item.label}
