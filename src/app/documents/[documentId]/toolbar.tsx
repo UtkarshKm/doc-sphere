@@ -4,6 +4,10 @@ import {useEditorStore} from "@/store/use-editor-store";
 import {Separator} from "@/components/ui/separator";
 
 import {
+	AlignCenterIcon,
+	AlignJustifyIcon,
+	AlignLeftIcon,
+	AlignRightIcon,
 	BoldIcon,
 	CheckIcon,
 	ChevronDownIcon,
@@ -47,6 +51,55 @@ import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 
+const AlignButton = () => {
+	const {editor} = useEditorStore();
+	const alignment = [
+		{
+			label: "Align Left",
+			value: "left",
+			icon: AlignLeftIcon,
+		},
+		{
+			label: "Align Center",
+			value: "center",
+			icon: AlignCenterIcon,
+		},
+		{
+			label: "Align Right",
+			value: "right",
+			icon: AlignRightIcon,
+		},
+		{
+			label: "Align Justify",
+			value: "justify",
+			icon: AlignJustifyIcon,
+		},
+	];
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<button className="h-7 min-w-7 flex-col shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors">
+					<AlignLeftIcon className="size-4" />
+				</button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent  className="p-1 ">
+				{alignment.map(({label, value, icon: Icon}) => (
+					<DropdownMenuItem
+						key={label}
+						onClick={() => editor?.chain().focus().setTextAlign(value).run()}
+						className="cursor-pointer py-2"
+					>
+						<div className="flex items-center justify-between w-full">
+							<Icon className="mr-2" />
+							<span className="truncate">{label}</span>
+						</div>
+					</DropdownMenuItem>
+				))}
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+};
 const ImageButton = () => {
 	const {editor} = useEditorStore();
 	const [isDialogOpen, setDialogOpen] = useState(false);
@@ -468,7 +521,7 @@ const ToolBarButton = ({onclick, isActive, icon: Icon}: ToolBarButtonProps) => {
 export function ToolBar() {
 	const {editor} = useEditorStore();
 
-	console.log("tollbar editor", {editor});
+	console.log("toolbar editor", {editor});
 
 	//Object[][]
 	// { ... } defines the object structure
@@ -610,6 +663,7 @@ export function ToolBar() {
 			list */}
 			<LinkButton />
 			<ImageButton />
+			<AlignButton />
 
 			{/* comment list-todo remove-formatting */}
 			{sections[2].map((item) => (
