@@ -8,6 +8,7 @@ import {
 	CheckIcon,
 	ChevronDownIcon,
 	HighlighterIcon,
+	ImageIcon,
 	ItalicIcon,
 	Link2Icon,
 	ListTodoIcon,
@@ -16,9 +17,11 @@ import {
 	PrinterIcon,
 	Redo2Icon,
 	RemoveFormattingIcon,
+	SearchIcon,
 	SpellCheckIcon,
 	UnderlineIcon,
 	Undo2Icon,
+	UploadIcon,
 } from "lucide-react";
 
 import {
@@ -30,10 +33,130 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+
 import {CompactPicker, type ColorResult} from "react-color";
 import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
+
+const ImageButton = () => {
+	const {editor} = useEditorStore();
+	const [isDialogOpen, setDialogOpen] = useState(false);
+	const [imageUrl, setImageUrl] = useState("");
+
+	const onChange = (src: string) => {
+		editor?.chain().focus().setImage({src: src}).run();
+	};
+
+	const onUpload = () => {
+		const input = document.createElement("input");
+		input.type = "file";
+		input.accept = "image/*";
+		input.onchange = (e) => {
+			const file = (e.target as HTMLInputElement).files?.[0];
+			if (file) {
+				// ✅ Create object URL from the file
+				const imageObjectUrl = URL.createObjectURL(file);
+				onChange(imageObjectUrl); // ✅ Use the created URL, not state variable
+
+				// ✅ Clean up object URL to prevent memory leaks
+				// setTimeout(() => {
+				//     URL.revokeObjectURL(imageObjectUrl);
+				// }, 1000);
+			}
+		};
+		input.click();
+	};
+
+	const imageUrlSubmit = () => {
+		if (imageUrl.trim()) {
+			onChange(imageUrl);
+			setImageUrl("");
+			setDialogOpen(false);
+		}
+	};
+
+	return (
+		<>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<button className="h-7 min-w-7 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm">
+						<ImageIcon className="size-4" />
+					</button>
+				</DropdownMenuTrigger>
+
+				<DropdownMenuContent>
+					{/* ✅ Make entire menu item clickable */}
+					<DropdownMenuItem
+						onClick={onUpload}
+						className="cursor-pointer"
+					>
+						<UploadIcon className="mr-2 size-4" />
+						Upload Image
+					</DropdownMenuItem>
+
+					<DropdownMenuItem
+						onClick={() => setDialogOpen(true)}
+						className="cursor-pointer"
+					>
+						<SearchIcon className="mr-2 size-4" />
+						Paste image URL
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+
+			<Dialog
+				open={isDialogOpen}
+				onOpenChange={setDialogOpen}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Insert Image URL</DialogTitle>
+						<DialogDescription>
+							Enter the URL of the image you want to add.
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className="space-y-4">
+						<Input
+							placeholder="https://example.com/image.jpg"
+							value={imageUrl}
+							onChange={(e) => setImageUrl(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									imageUrlSubmit();
+								}
+							}}
+						/>
+
+						<div className="flex gap-2 justify-end">
+							<Button
+								variant="outline"
+								onClick={() => setDialogOpen(false)}
+							>
+								Cancel
+							</Button>
+							<Button
+								onClick={imageUrlSubmit}
+								disabled={!imageUrl.trim()}
+							>
+								Insert Image
+							</Button>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
+		</>
+	);
+};
 
 const LinkButton = () => {
 	const {editor} = useEditorStore();
@@ -486,6 +609,7 @@ export function ToolBar() {
 			line hight 
 			list */}
 			<LinkButton />
+			<ImageButton />
 
 			{/* comment list-todo remove-formatting */}
 			{sections[2].map((item) => (
