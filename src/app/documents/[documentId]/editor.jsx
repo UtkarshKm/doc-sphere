@@ -8,10 +8,38 @@ import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
 import Image from "@tiptap/extension-image";
-import ImageResize from 'tiptap-extension-resize-image';
+import ImageResize from "tiptap-extension-resize-image";
+import {useEditorStore} from "@/store/use-editor-store";
 
 export const Editor = () => {
+	const {setEditor, triggerUpdate} = useEditorStore();
+
 	const editor = useEditor({
+		onCreate({editor}) {
+			setEditor(editor);
+			triggerUpdate(); // Initial trigger for toolbar setup
+		},
+
+		onUpdate() {
+			triggerUpdate(); // ✅ Content changed - update toolbar
+		},
+
+		onSelectionUpdate() {
+			triggerUpdate(); // ✅ Selection changed - update active states
+		},
+
+		onFocus() {
+			triggerUpdate(); // ✅ Focus changed - update toolbar
+		},
+
+		onBlur() {
+			triggerUpdate(); // ✅ Blur changed - update toolbar
+		},
+
+		onDestroy() {
+			setEditor(null);
+		},
+
 		editorProps: {
 			style: "padding-left: 56px padding-right:56px",
 			attributes: {
