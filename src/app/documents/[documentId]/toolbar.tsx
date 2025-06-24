@@ -5,6 +5,7 @@ import {Separator} from "@/components/ui/separator";
 
 import {
 	BoldIcon,
+	CheckIcon,
 	ChevronDownIcon,
 	ItalicIcon,
 	ListTodoIcon,
@@ -27,114 +28,163 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// const FontFamilyButton = () => {
-// 	const {editor} = useEditorStore();
+const HeadingButton = () => {
+	const {editor} = useEditorStore();
 
-// 	const fonts = [
-// 		// broswer supported fonts
-// 		{label: "Arial", value: "Arial"},
-// 		{label: "Arial Black", value: "Arial Black"},
-// 		{label: "Comic Sans MS", value: "Comic Sans MS"},
-// 		{label: "Courier New", value: "Courier New"},
-// 		{label: "Georgia", value: "Georgia"},
-// 		{label: "Impact", value: "Impact"},
-// 		{label: "Lucida Sans Unicode", value: "Lucida Sans Unicode"},
-// 		{label: "Tahoma", value: "Tahoma"},
-// 		{label: "Times New Roman", value: "Times New Roman"},
-// 		{label: "Trebuchet MS", value: "Trebuchet MS"},
-// 		{label: "Verdana", value: "Verdana"},
-// 		{label: "MS Sans Serif", value: "MS Sans Serif"},
-// 	];
+	const headings = [
+		{
+			label: "Normal text",
+			value: 0,
+			element: "p",
+			className: "text-sm",
+			preview: "Normal text",
+		},
+		{
+			label: "Heading 1",
+			value: 1,
+			element: "h1",
+			className: "text-2xl font-bold",
+			preview: "Heading 1",
+		},
+		{
+			label: "Heading 2",
+			value: 2,
+			element: "h2",
+			className: "text-xl font-semibold",
+			preview: "Heading 2",
+		},
+		{
+			label: "Heading 3",
+			value: 3,
+			element: "h3",
+			className: "text-lg font-semibold",
+			preview: "Heading 3",
+		},
+		{
+			label: "Heading 4",
+			value: 4,
+			element: "h4",
+			className: "text-base font-medium",
+			preview: "Heading 4",
+		},
+		{
+			label: "Heading 5",
+			value: 5,
+			element: "h5",
+			className: "text-sm font-medium",
+			preview: "Heading 5",
+		},
+		{
+			label: "Heading 6",
+			value: 6,
+			element: "h6",
+			className: "text-xs font-medium",
+			preview: "Heading 6",
+		},
+	];
 
-// 	return (
-// 		<DropdownMenu>
-// 			<DropdownMenuTrigger asChild>
-// 				<button
-// 					className={
-// 						" h-7 w-[120px] shrink-0 flex items-center justify-between rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm"
-// 					}
-// 				>
-// 					<span className="truncate">
-// 						{editor?.getAttributes("textStyle").fontFamily || "Arial" }
-// 					</span>
-// 					<ChevronDownIcon className="ml-2 size-4 shrink-0" />
-// 				</button>
-// 			</DropdownMenuTrigger>
+	const getCurrentHeading = () => {
+		if (!editor) return headings[0];
 
-// 			<DropdownMenuContent className="p-1 flex flex-col gap-y-1">
-// 				{fonts.map((font) => (
-// 					// <DropdownMenuItem
-// 					// 	key={font.value}
+		for (let i = 1; i <= 6; i++) {
+			if (editor.isActive("heading", {level: i})) {
+				return headings[i];
+			}
+		}
+		return headings[0];
+	};
 
-// 					// 	onClick={() => {
-// 					// 		editor?.chain().focus().setFontFamily(font.value).run();
-// 					// 	}}
-// 					// >
-// 					// 	{font.label}
-// 					// </DropdownMenuItem>
+	const currentHeading = getCurrentHeading();
 
-// 					<button
-// 						key={font.value}
-// 						className={cn(
-// 							"flex items-center gap-x-2 px-2 py-1 rounded-sm hover:bg-neutral-200/80",
-// 							editor?.getAttributes("textStyle").fontFamily === font.value &&
-// 								"bg-neutral-200/80"
-// 						)}
-// 						onClick={() => {
-// 							editor?.chain().focus().setFontFamily(font.value).run();
-// 						}}
-// 						style={{fontFamily: font.value}}
-// 					>
-// 						{font.label}
-// 					</button>
-// 				))}
-// 			</DropdownMenuContent>
-// 		</DropdownMenu>
-// 	);
-// };
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<button className="h-7 w-[120px] shrink-0 flex items-center justify-between rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors">
+					<span className="truncate">{currentHeading.label}</span>
+					<ChevronDownIcon className="ml-2 size-4 shrink-0" />
+				</button>
+			</DropdownMenuTrigger>
+
+			<DropdownMenuContent className="w-[200px]">
+				<DropdownMenuLabel>Text Style</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+
+				{headings.map((heading) => (
+					<DropdownMenuItem
+						key={heading.value}
+						onClick={() => {
+							if (heading.value === 0) {
+								editor?.chain().focus().setParagraph().run();
+							} else {
+								editor
+									?.chain()
+									.focus()
+									.toggleHeading({
+										level: heading.value as 1 | 2 | 3 | 4 | 5 | 6,
+									})
+									.run();
+							}
+						}}
+						className="cursor-pointer py-2"
+					>
+						<div className="flex items-center justify-between w-full">
+							<span className={heading.className}>{heading.preview}</span>
+							{currentHeading.value === heading.value && (
+								<CheckIcon className="size-4 ml-2" />
+							)}
+						</div>
+					</DropdownMenuItem>
+				))}
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+};
 
 const FontFamilyButton = () => {
-    const {editor} = useEditorStore();
+	const {editor} = useEditorStore();
 
-    const fonts = [
-        {label: "Arial", value: "Arial"},
-        {label: "Arial Black", value: "Arial Black"},
-        {label: "Comic Sans MS", value: "Comic Sans MS"},
-        {label: "Courier New", value: "Courier New"},
-        {label: "Georgia", value: "Georgia"},
-        {label: "Impact", value: "Impact"},
-        {label: "Times New Roman", value: "Times New Roman"},
-        {label: "Verdana", value: "Verdana"},
-    ];
+	const fonts = [
+		{label: "Arial", value: "Arial"},
+		{label: "Arial Black", value: "Arial Black"},
+		{label: "Comic Sans MS", value: "Comic Sans MS"},
+		{label: "Courier New", value: "Courier New"},
+		{label: "Georgia", value: "Georgia"},
+		{label: "Impact", value: "Impact"},
+		{label: "Times New Roman", value: "Times New Roman"},
+		{label: "Verdana", value: "Verdana"},
+	];
 
-    const currentFontFamily = editor?.getAttributes("textStyle")?.fontFamily || "Arial";
+	const currentFontFamily =
+		editor?.getAttributes("textStyle")?.fontFamily || "Arial";
 
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <button className="h-7 w-[120px] shrink-0 flex items-center justify-between rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm">
-                    <span className="truncate">{currentFontFamily}</span>
-                    <ChevronDownIcon className="ml-2 size-4 shrink-0" />
-                </button>
-            </DropdownMenuTrigger>
-            
-            <DropdownMenuContent>
-                <DropdownMenuLabel>Font Family</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                
-                {fonts.map((font) => (
-                    <DropdownMenuItem
-                        key={font.value}
-                        onClick={() => editor?.chain().focus().setFontFamily(font.value).run()}
-                        style={{fontFamily: font.value}}
-                    >
-                        {font.label}
-                        {currentFontFamily === font.value && " ✓"}
-                    </DropdownMenuItem>
-                ))}
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<button className="h-7 w-[120px] shrink-0 flex items-center justify-between rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm">
+					<span className="truncate">{currentFontFamily}</span>
+					<ChevronDownIcon className="ml-2 size-4 shrink-0" />
+				</button>
+			</DropdownMenuTrigger>
+
+			<DropdownMenuContent>
+				<DropdownMenuLabel>Font Family</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+
+				{fonts.map((font) => (
+					<DropdownMenuItem
+						key={font.value}
+						onClick={() =>
+							editor?.chain().focus().setFontFamily(font.value).run()
+						}
+						style={{fontFamily: font.value}}
+					>
+						{font.label}
+						{currentFontFamily === font.value && " ✓"}
+					</DropdownMenuItem>
+				))}
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
 };
 interface ToolBarButtonProps {
 	onclick?: () => void;
@@ -260,6 +310,7 @@ export function ToolBar() {
 				className="!h-6  bg-neutral-300 "
 			/>
 			{/* heading */}
+			<HeadingButton />
 			<Separator
 				orientation="vertical"
 				className="!h-6  bg-neutral-300 "
