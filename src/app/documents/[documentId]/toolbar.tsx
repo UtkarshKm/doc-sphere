@@ -15,6 +15,8 @@ import {
 	ImageIcon,
 	ItalicIcon,
 	Link2Icon,
+	ListIcon,
+	ListOrderedIcon,
 	ListTodoIcon,
 	LucideIcon,
 	MessageSquarePlusIcon,
@@ -51,6 +53,52 @@ import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 
+const ListButton = () => {
+	const {editor} = useEditorStore();
+	const list = [
+		{
+			label: "Ordered List",
+
+			icon: ListOrderedIcon,
+			isActive: editor?.isActive("orderedList"),
+			onclick: () => editor?.chain().focus().toggleOrderedList().run(),
+		},
+		{
+			label: "Bullet List",
+
+			icon: ListIcon,
+			isActive: editor?.isActive("bulletList"),
+			onclick: () => editor?.chain().focus().toggleBulletList().run(),
+		},
+	];
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<button className="h-7 min-w-7 flex-col shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors">
+					<ListIcon className="size-4" />
+				</button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className="p-1 ">
+				{list.map(({label, isActive, onclick, icon: Icon}) => (
+					<DropdownMenuItem
+						key={label}
+						onClick={onclick}
+						className={cn(
+							"cursor-pointer py-2",
+							isActive && "bg-neutral-200/80"
+						)}
+					>
+						<div className="flex items-center justify-between w-full">
+							<Icon className="mr-2" />
+							<span className="truncate">{label}</span>
+						</div>
+					</DropdownMenuItem>
+				))}
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+};
 const AlignButton = () => {
 	const {editor} = useEditorStore();
 	const alignment = [
@@ -83,7 +131,7 @@ const AlignButton = () => {
 					<AlignLeftIcon className="size-4" />
 				</button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent  className="p-1 ">
+			<DropdownMenuContent className="p-1 ">
 				{alignment.map(({label, value, icon: Icon}) => (
 					<DropdownMenuItem
 						key={label}
@@ -664,6 +712,7 @@ export function ToolBar() {
 			<LinkButton />
 			<ImageButton />
 			<AlignButton />
+			<ListButton />
 
 			{/* comment list-todo remove-formatting */}
 			{sections[2].map((item) => (
