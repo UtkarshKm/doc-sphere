@@ -283,4 +283,8 @@
     }
   }
 
+  /*  font family */
+  html {
+  --title-font-family: 'Helvetica', sans-serif;
+}
 }
