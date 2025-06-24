@@ -9,6 +9,7 @@ import {
 	ChevronDownIcon,
 	HighlighterIcon,
 	ItalicIcon,
+	Link2Icon,
 	ListTodoIcon,
 	LucideIcon,
 	MessageSquarePlusIcon,
@@ -29,67 +30,139 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { CompactPicker, type ColorResult } from "react-color";
+import {CompactPicker, type ColorResult} from "react-color";
+import {useState} from "react";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+
+const LinkButton = () => {
+	const {editor} = useEditorStore();
+	const [value, setValue] = useState("");
+
+	const isActive = editor?.isActive("link");
+	const currentHref = editor?.getAttributes("link")?.href || "";
+
+	const onChange = (href: string) => {
+		if (href.trim()) {
+			const url = href.startsWith("http") ? href : `https://${href}`;
+			editor?.chain().focus().setLink({href: url}).run();
+		}
+		setValue("");
+	};
+
+	const removeLink = () => {
+		editor?.chain().focus().unsetLink().run();
+		setValue("");
+	};
+
+	return (
+		<DropdownMenu
+			onOpenChange={(open) => {
+				if (open) {
+					setValue(currentHref);
+				}
+			}}
+		>
+			<DropdownMenuTrigger asChild>
+				<button
+					className={cn(
+						"h-7 min-w-7 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors",
+						isActive && "bg-neutral-200/80"
+					)}
+				>
+					<Link2Icon className="size-4" />
+				</button>
+			</DropdownMenuTrigger>
+
+			<DropdownMenuContent className="p-2.5">
+				<div className="flex gap-x-2 items-center">
+					<Input
+						placeholder="https://example.com"
+						value={value}
+						onChange={(e) => setValue(e.target.value)}
+						onKeyDown={(e) => {
+							if (e.key === "Enter") {
+								e.preventDefault();
+								onChange(value);
+							}
+						}}
+						className="min-w-[200px]"
+					/>
+					<Button
+						onClick={() => onChange(value)}
+						disabled={!value.trim()}
+						size="sm"
+					>
+						Apply
+					</Button>
+					{isActive && (
+						<Button
+							onClick={removeLink}
+							variant="outline"
+							size="sm"
+						>
+							Remove
+						</Button>
+					)}
+				</div>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+};
 
 const TextColorButton = () => {
 	const {editor} = useEditorStore();
 	const currentColor = editor?.getAttributes("textStyle")?.color || "#000000";
 
-	const onChange = ( color : ColorResult) => {
+	const onChange = (color: ColorResult) => {
 		editor?.chain().focus().setColor(color.hex).run();
-	}
+	};
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<button className="h-7 min-w-7 flex-col shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors">
-				<span className="text-sm">
-					A
-				</span>
-				<div className="h-0.5 w-full" style={{backgroundColor: currentColor}}></div>
+					<span className="text-sm">A</span>
+					<div
+						className="h-0.5 w-full"
+						style={{backgroundColor: currentColor}}
+					></div>
 				</button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="border-0">
 				<CompactPicker
-				color={currentColor}
-				onChange={onChange}
+					color={currentColor}
+					onChange={onChange}
 				/>
-
 			</DropdownMenuContent>
 		</DropdownMenu>
-	)
-
-}
+	);
+};
 
 const HighLightButton = () => {
 	const {editor} = useEditorStore();
 	const currentColor = editor?.getAttributes("highlight")?.color || "#ffffff";
 
-	const onChange = ( color : ColorResult) => {
+	const onChange = (color: ColorResult) => {
 		editor?.chain().focus().setHighlight({color: color.hex}).run();
-	}
+	};
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<button className="h-7 min-w-7 flex-col shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors">
-				<HighlighterIcon className="size-4" />
-				
+					<HighlighterIcon className="size-4" />
 				</button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="border-0">
 				<CompactPicker
-				color={currentColor}
-				onChange={onChange}
+					color={currentColor}
+					onChange={onChange}
 				/>
-
 			</DropdownMenuContent>
 		</DropdownMenu>
-	)
-
-}
-
-
+	);
+};
 
 const HeadingButton = () => {
 	const {editor} = useEditorStore();
@@ -354,7 +427,6 @@ export function ToolBar() {
 	];
 	return (
 		<div className="bg-[#f1f4f9] px-2.5 py-0.5 rounded-[24px] flex items-center gap-x-0.5 overflow-x-auto  ">
-
 			{/* undo redo print spell check */}
 			{sections[0].map((item) => (
 				<ToolBarButton
@@ -401,8 +473,8 @@ export function ToolBar() {
 			{/* text color
 				highlight color */}
 
-				<TextColorButton />
-				<HighLightButton />
+			<TextColorButton />
+			<HighLightButton />
 
 			<Separator
 				orientation="vertical"
@@ -413,6 +485,7 @@ export function ToolBar() {
 			algin
 			line hight 
 			list */}
+			<LinkButton />
 
 			{/* comment list-todo remove-formatting */}
 			{sections[2].map((item) => (
