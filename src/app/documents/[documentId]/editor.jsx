@@ -25,6 +25,7 @@ export const Editor = () => {
 	const {setEditor, triggerUpdate} = useEditorStore();
 
 	const editor = useEditor({
+		immediatelyRender: false,
 		onCreate({editor}) {
 			setEditor(editor);
 			triggerUpdate(); // Initial trigger for toolbar setup
