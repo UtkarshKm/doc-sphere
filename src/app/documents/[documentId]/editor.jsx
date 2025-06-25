@@ -19,6 +19,7 @@ import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
 
 import {FontSizeExtension} from "@/extensions/font-size";
+import {LineHightExtension} from "@/extensions/line-hight";
 
 export const Editor = () => {
 	const {setEditor, triggerUpdate} = useEditorStore();
@@ -59,6 +60,7 @@ export const Editor = () => {
 		extensions: [
 			StarterKit,
 			FontSizeExtension,
+			LineHightExtension,
 			TaskList,
 			TaskItem.configure({
 				nested: true,

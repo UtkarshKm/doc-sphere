@@ -30,6 +30,7 @@ import {
 	MinusIcon,
 	CheckIcon,
 	ChevronDownIcon,
+	ListCollapseIcon,
 } from "lucide-react";
 
 import {
@@ -54,6 +55,44 @@ import {CompactPicker, type ColorResult} from "react-color";
 import {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
+
+const LineHightButton = () => {
+	const {editor} = useEditorStore();
+	const hights = [
+		{label: "Default", value: "normal"},
+		{label: "1.2", value: "1.2"},
+		{label: "1.5", value: "1.5"},
+		{label: "2", value: "2"},
+		{label: "2.5", value: "2.5"},
+	];
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<button className="h-7 min-w-7 flex-col shrink-0 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm transition-colors">
+					<ListCollapseIcon className="size-4" />
+				</button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className="p-1 ">
+				{hights.map(({label, value}) => (
+					<DropdownMenuItem
+						key={label}
+						onClick={() => editor?.chain().focus().setLineHight(value).run()}
+						className={cn(
+							"cursor-pointer py-2",
+							editor?.getAttributes("paragraph")?.lineHight === value &&
+								"bg-neutral-200/80"
+						)}
+					>
+						<div className="flex items-center justify-between w-full">
+							<span className="truncate">{label}</span>
+						</div>
+					</DropdownMenuItem>
+				))}
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+};
 
 const FontSizeButton = () => {
 	const {editor} = useEditorStore();
@@ -215,6 +254,7 @@ const ListButton = () => {
 		</DropdownMenu>
 	);
 };
+
 const AlignButton = () => {
 	const {editor} = useEditorStore();
 	const alignment = [
@@ -271,6 +311,7 @@ const AlignButton = () => {
 		</DropdownMenu>
 	);
 };
+
 const ImageButton = () => {
 	const {editor} = useEditorStore();
 	const [isDialogOpen, setDialogOpen] = useState(false);
@@ -669,6 +710,7 @@ const FontFamilyButton = () => {
 		</DropdownMenu>
 	);
 };
+
 interface ToolBarButtonProps {
 	onclick?: () => void;
 	isActive?: boolean;
@@ -836,6 +878,7 @@ export function ToolBar() {
 			<LinkButton />
 			<ImageButton />
 			<AlignButton />
+			<LineHightButton />
 			<ListButton />
 
 			{/* comment list-todo remove-formatting */}
