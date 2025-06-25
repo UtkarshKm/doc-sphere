@@ -9,8 +9,6 @@ import {
 	AlignLeftIcon,
 	AlignRightIcon,
 	BoldIcon,
-	CheckIcon,
-	ChevronDownIcon,
 	HighlighterIcon,
 	ImageIcon,
 	ItalicIcon,
@@ -28,6 +26,10 @@ import {
 	UnderlineIcon,
 	Undo2Icon,
 	UploadIcon,
+	PlusIcon,
+	MinusIcon,
+	CheckIcon,
+	ChevronDownIcon,
 } from "lucide-react";
 
 import {
@@ -45,13 +47,127 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
+	// DialogTrigger,
 } from "@/components/ui/dialog";
 
 import {CompactPicker, type ColorResult} from "react-color";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
+
+const FontSizeButton = () => {
+	const {editor} = useEditorStore();
+	const [fontSize, setFontSize] = useState(16); // Default font size
+
+	const fontSizes = [8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 36, 48, 54, 72];
+
+	// Sync font size with editor's current selection
+	useEffect(() => {
+		if (!editor) return;
+
+		const updateFontSize = () => {
+			// Only runs when actually needed
+		};
+
+		// Listen to specific events only
+		editor.on("selectionUpdate", updateFontSize); // Only when selection changes
+		editor.on("transaction", updateFontSize); // Only when content changes
+
+		return () => {
+			editor.off("selectionUpdate", updateFontSize);
+			editor.off("transaction", updateFontSize);
+		};
+	}, [editor]);
+
+	const updateFontSize = (size: number) => {
+		const clampedSize = Math.max(8, Math.min(72, size)); // Clamp between 8px and 72px
+		editor?.chain().focus().setFontSize(`${clampedSize}px`).run();
+		setFontSize(clampedSize);
+	};
+
+	const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | null>(
+		null
+	);
+
+	// ✅ Single debounced function for BOTH increment and decrement
+	const debouncedUpdate = (newSize: number) => {
+		if (timer) clearTimeout(timer); // Cancel any previous update
+
+		const newTimer = setTimeout(() => {
+			updateFontSize(newSize); // Apply to editor after delay
+		}, 250);
+
+		setTimer(newTimer);
+		setFontSize(newSize); // Immediate UI feedback
+	};
+
+	// ✅ Increment uses debounced update
+	const increment = () => {
+		const currentSize = typeof fontSize === "number" ? fontSize : 16;
+		const newSize = Math.min(72, currentSize + 1);
+		debouncedUpdate(newSize);
+	};
+
+	// ✅ Decrement also uses the same debounced update
+	const decrement = () => {
+		const currentSize = typeof fontSize === "number" ? fontSize : 16;
+		const newSize = Math.max(8, currentSize - 1);
+		debouncedUpdate(newSize);
+	};
+
+	return (
+		<div className="flex items-center gap-x-0.5">
+			<Button
+				variant="ghost"
+				size="icon"
+				className="h-7 w-7"
+				onClick={decrement}
+				disabled={fontSize <= 8}
+			>
+				<MinusIcon className="size-4" />
+			</Button>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						variant="ghost"
+						className="h-7 w-12 text-sm px-1 focus-visible:ring-0 focus-visible:ring-offset-0"
+					>
+						{fontSize}px
+						<ChevronDownIcon className="ml-1 size-3 shrink-0" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent className="p-1">
+					<DropdownMenuLabel>Font Size</DropdownMenuLabel>
+					<DropdownMenuSeparator />
+					{fontSizes.map((size) => (
+						<DropdownMenuItem
+							key={size}
+							onClick={() => updateFontSize(size)}
+							className={cn(
+								"cursor-pointer py-2",
+								fontSize === size && "bg-neutral-200/80"
+							)}
+						>
+							<div className="flex items-center justify-between w-full">
+								<span>{size}px</span>
+								{fontSize === size && <CheckIcon className="size-4 ml-2" />}
+							</div>
+						</DropdownMenuItem>
+					))}
+				</DropdownMenuContent>
+			</DropdownMenu>
+			<Button
+				variant="ghost"
+				size="icon"
+				className="h-7 w-7"
+				onClick={increment}
+				disabled={fontSize >= 72}
+			>
+				<PlusIcon className="size-4" />
+			</Button>
+		</div>
+	);
+};
 
 const ListButton = () => {
 	const {editor} = useEditorStore();
@@ -684,6 +800,7 @@ export function ToolBar() {
 				className="!h-6  bg-neutral-300 "
 			/>
 			{/* front size */}
+			<FontSizeButton />
 
 			<Separator
 				orientation="vertical"

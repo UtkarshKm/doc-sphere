@@ -18,6 +18,8 @@ import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
 
+import {FontSizeExtension} from "@/extensions/font-size";
+
 export const Editor = () => {
 	const {setEditor, triggerUpdate} = useEditorStore();
 
@@ -56,6 +58,7 @@ export const Editor = () => {
 		},
 		extensions: [
 			StarterKit,
+			FontSizeExtension,
 			TaskList,
 			TaskItem.configure({
 				nested: true,
