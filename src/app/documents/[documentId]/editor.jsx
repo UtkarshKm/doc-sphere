@@ -55,7 +55,7 @@ export const Editor = () => {
 			style: "padding-left: 56px padding-right:56px",
 			attributes: {
 				class:
-					" pr-10 focus:outline-none print:border-0 bg-white border  broder-[#c7c7c7] flex flex-col min-h-[1054px] w-[816px] pt-10  pb-10 cursor-text pl-10",
+					" pr-10 focus:outline-none print:border-0 bg-white border  border-[#c7c7c7] flex flex-col min-h-[1054px] w-[816px] pt-10  pb-10 cursor-text pl-10",
 			},
 		},
 		extensions: [
@@ -91,7 +91,21 @@ export const Editor = () => {
 			}),
 		],
 		content: `
-			     
+			     <table>
+          <tbody>
+            <tr>
+              <th>Name</th>
+              <th colspan="3">Description</th>
+            </tr>
+            <tr>
+              <td>Super League</td>
+              <td>Singer</td>
+              <td>Songwriter</td>
+              <td>Actress</td>
+            </tr>
+          </tbody>
+        </table>
+
 			     hello world
 			   `,
 	});
