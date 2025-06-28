@@ -1,5 +1,5 @@
 "use client";
-import {useEditor, EditorContent} from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
@@ -7,9 +7,8 @@ import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
-import Image from "@tiptap/extension-image";
 import ImageResize from "tiptap-extension-resize-image";
-import {useEditorStore} from "@/store/use-editor-store";
+import { useEditorStore } from "@/store/use-editor-store";
 import Underline from "@tiptap/extension-underline";
 import TextStyle from "@tiptap/extension-text-style";
 import TextAlign from "@tiptap/extension-text-align";
@@ -18,16 +17,16 @@ import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
 import Link from "@tiptap/extension-link";
 
-import {FontSizeExtension} from "@/extensions/font-size";
-import {LineHightExtension} from "@/extensions/line-hight";
+import { FontSizeExtension } from "@/extensions/font-size";
+import { LineHightExtension } from "@/extensions/line-hight";
 import Ruler from "./ruler";
 
 export const Editor = () => {
-	const {setEditor, triggerUpdate} = useEditorStore();
+	const { setEditor, triggerUpdate } = useEditorStore();
 
 	const editor = useEditor({
 		immediatelyRender: false,
-		onCreate({editor}) {
+		onCreate({ editor }) {
 			setEditor(editor);
 			triggerUpdate(); // Initial trigger for toolbar setup
 		},
@@ -60,7 +59,9 @@ export const Editor = () => {
 			},
 		},
 		extensions: [
-			StarterKit,
+			StarterKit.configure({
+				image: false,
+			}),
 			FontSizeExtension,
 			LineHightExtension,
 			TaskList,
@@ -73,7 +74,6 @@ export const Editor = () => {
 			TableRow,
 			TableHeader,
 			TableCell,
-			Image,
 			ImageResize,
 			Underline,
 			TextStyle,
@@ -113,7 +113,7 @@ export const Editor = () => {
 
 	return (
 		<div className=" size-full overflow-x-auto bg-[#f9fbfd] px-4 print:p-0 print:bg-white print:overflow-visible">
-			<Ruler/>
+			<Ruler />
 			<div className=" min-w-max flex justify-center w-[816px] py-4 print:p-0 print:w-full mx-auto print:min-w-0 ">
 				<EditorContent editor={editor} />
 			</div>
