@@ -20,6 +20,7 @@ import Link from "@tiptap/extension-link";
 
 import {FontSizeExtension} from "@/extensions/font-size";
 import {LineHightExtension} from "@/extensions/line-hight";
+import Ruler from "./ruler";
 
 export const Editor = () => {
 	const {setEditor, triggerUpdate} = useEditorStore();
@@ -52,7 +53,7 @@ export const Editor = () => {
 		},
 
 		editorProps: {
-			style: "padding-left: 56px padding-right:56px",
+			style: "padding-left: 56px; padding-right:56px;",
 			attributes: {
 				class:
 					" pr-10 focus:outline-none print:border-0 bg-white border  border-[#c7c7c7] flex flex-col min-h-[1054px] w-[816px] pt-10  pb-10 cursor-text pl-10",
@@ -112,6 +113,7 @@ export const Editor = () => {
 
 	return (
 		<div className=" size-full overflow-x-auto bg-[#f9fbfd] px-4 print:p-0 print:bg-white print:overflow-visible">
+			<Ruler/>
 			<div className=" min-w-max flex justify-center w-[816px] py-4 print:p-0 print:w-full mx-auto print:min-w-0 ">
 				<EditorContent editor={editor} />
 			</div>

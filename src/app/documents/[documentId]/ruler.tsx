@@ -15,9 +15,11 @@ export default function Ruler() {
 	const handleLeftMouseDown = () => {
 		setIsDraggingLeft(true);
 	};
+
 	const handleRightMouseDown = () => {
 		setIsDraggingRight(true);
 	};
+
 	const handleMouseMove = (e: MouseEvent) => {
 		if ((isDraggingLeft || isDraggingRight) && rulerRef.current) {
 			const container = rulerRef.current?.querySelector("#ruler-container");
@@ -48,10 +50,10 @@ export default function Ruler() {
 		setIsDraggingLeft(false);
 		setIsDraggingRight(false);
 	};
-
 	const handleLeftDoubleClick = () => {
 		setLeftmargin(40);
 	};
+
 	const handleRightDoubleClick = () => {
 		setRightmargin(40);
 	};
@@ -65,10 +67,9 @@ export default function Ruler() {
 		>
 			<div
 				id="ruler-container"
-				className="max-w-[816px] mx-auto w-full h-full "
+				className="max-w-[816px] mx-auto w-full h-full relative "
 			>
-				<div className=" inset-x-0 bottom-0 h-full   ">
-					<div className=" absolute h-full w-[816px]">
+				<div className=" absolute inset-x-0 bottom-0 h-full   ">
 						<Marker
 							isLeft={true}
 							position={leftmargin}
@@ -83,6 +84,7 @@ export default function Ruler() {
 							onMouseDown={handleRightMouseDown}
 							onDoubleClick={handleRightDoubleClick}
 						/>
+					<div className=" relative h-full w-[816px]">
 						{markers.map((marker) => {
 							const position = (marker * 816) / 82;
 
