@@ -91,24 +91,7 @@ export const Editor = () => {
 				types: ["heading", "paragraph"],
 			}),
 		],
-		content: `
-			     <table>
-          <tbody>
-            <tr>
-              <th>Name</th>
-              <th colspan="3">Description</th>
-            </tr>
-            <tr>
-              <td>Super League</td>
-              <td>Singer</td>
-              <td>Songwriter</td>
-              <td>Actress</td>
-            </tr>
-          </tbody>
-        </table>
-
-			     hello world
-			   `,
+		content: `hello world`,
 	});
 
 	return (
