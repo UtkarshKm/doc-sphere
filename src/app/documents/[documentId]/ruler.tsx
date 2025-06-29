@@ -63,11 +63,11 @@ export default function Ruler() {
 			onMouseMove={handleMouseMove}
 			onMouseUp={handleMouseUp}
 			onMouseLeave={handleMouseUp}
-			className="h-6 border-b border-gray-300 flex items-end relative select-none print:hidden "
+			className="w-[816px] mx-auto h-6 border-b border-gray-300 flex items-end relative select-none print:hidden "
 		>
 			<div
 				id="ruler-container"
-				className="max-w-[816px] mx-auto w-full h-full relative "
+				className=" w-full h-full relative "
 			>
 				<div className=" absolute inset-x-0 bottom-0 h-full   ">
 						<Marker
@@ -138,7 +138,7 @@ const Marker = ({
 }: MarkerProps) => {
 	return (
 		<div
-			className={`absolute top-0 w-4 h-full cursor-ew-resize z-[50] group -ml-2`}
+			className={`absolute top-0 w-4 h-full cursor-ew-resize z-[9] group -ml-2`}
 			style={{[isLeft ? "left" : "right"]: `${position}px`}}
 			onMouseDown={onMouseDown}
 			onDoubleClick={onDoubleClick}
