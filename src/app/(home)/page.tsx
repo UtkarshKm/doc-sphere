@@ -1,8 +1,15 @@
-
-import { Navbar } from "./navbar";
-import { TemplateGallery } from "./template-gallery";
+'use client'
+import {Navbar} from "./navbar";
+import {TemplateGallery} from "./template-gallery";
+import {useQuery} from "convex/react";
+import {api} from "../../../convex/_generated/api";
 
 function Home() {
+	const documents = useQuery(api.document.getDocument)
+	if (!documents)
+		return <>
+		<p> Loading...</p>
+		</>;
 	return (
 		<>
 		<div className="flex flex-col min-h-screen">
@@ -10,8 +17,11 @@ function Home() {
 			<Navbar />
 		</div>
 
-		<div className=" mt-16">
-			<TemplateGallery />
+			<div className="mt-16">
+				<TemplateGallery/>
+				{documents?.map((document) => (
+					<span key={document._id} >{document.title}</span>
+				))}
 		</div>
 		</div>
 		</>
