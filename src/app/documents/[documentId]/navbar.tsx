@@ -69,7 +69,7 @@ export function Navbar() {
 	
 	return (
 		<nav className=" flex items-center justify-start ">
-			<div className=" flex gap-2 items-center">
+			<div className=" flex gap-2 items-center pr-4">
 				<Link href="/">
 					<Image
 						src="/logo.svg"
