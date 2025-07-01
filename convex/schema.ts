@@ -7,14 +7,14 @@ export default defineSchema({
         initialContent: v.optional(v.string()),
         ownerId: v.string(),
         roomId:v.optional(v.string()),
-        organisationId:v.optional(v.string()),
+        organizationId:v.optional(v.string()),
 
     })
         .index("by_ownerId",["ownerId"])
-        .index("byOrganisation",["organisationId"])
+        .index("byOrganization",["organizationId"])
         .searchIndex("searchTitle", {
                 searchField: "title",
-                filterFields: ["ownerId", "organisationId"]
+                filterFields: ["ownerId", "organizationId"]
             }
         )
 })
