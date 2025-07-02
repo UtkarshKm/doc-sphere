@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import {LoaderIcon} from "lucide-react";
 import {DocumentRow} from "./document-row";
+import {Button} from "@/components/ui/button";
 
 interface DocumentsTableProps {
 	documents: Doc<"documents">[] | undefined;
@@ -49,12 +50,28 @@ export const DocumentsTable = ({
 							</TableRow>
 						</TableBody>
 					:	<TableBody>
-						{documents.map((document) =>(
-							<DocumentRow key={document._id} document={document} />
-						))}
-						</TableBody>}
+							{documents.map((document) => (
+								<DocumentRow
+									key={document._id}
+									document={document}
+								/>
+							))}
+						</TableBody>
+					}
 				</Table>
 			}
+			<div className="flex justify-center items-center">
+				<Button
+					variant="ghost"
+					onClick={() => loadMore(5)}
+					size="sm"
+					disabled={status !== "CanLoadMore"}
+				>
+					{status === "CanLoadMore" ?
+						"Load more"
+					:	"No more documents"}
+				</Button>
+			</div>
 		</div>
 	);
 };
