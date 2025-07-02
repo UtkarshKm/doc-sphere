@@ -24,9 +24,14 @@ interface RemoveDialogProps {
 export const RemoveDialog = ({documentId, children}: RemoveDialogProps) => {
 	const removeDocument = useMutation(api.document.deleteDocumentById);
 	const handleDelete = async () => {
-		setIsRemoving(true);
-		await removeDocument({id: documentId});
-		setIsRemoving(false);
+		try {
+			setIsRemoving(true);
+			await removeDocument({id: documentId});
+		} catch (error) {
+			console.error("Failed to delete document:", error);
+		} finally {
+			setIsRemoving(false);
+		}
 	};
 
 	const [isRemoving, setIsRemoving] = useState(false);
