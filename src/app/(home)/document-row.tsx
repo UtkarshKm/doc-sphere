@@ -1,14 +1,19 @@
 import {Doc} from "../../../convex/_generated/dataModel"
 import { TableRow, TableCell } from "@/components/ui/table";
-import { Building2Icon, CircleUserRound, MoreVerticalIcon } from "lucide-react";
+import { Building2Icon, CircleUserRound } from "lucide-react";
 import { SiGoogledocs } from "react-icons/si";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { DocumentDropdownMenu } from "./document-dropdown-menu";
 
 
 interface DocumentRowProps {
 	document: Doc<"documents">;
 }
+
+const onNewtabClick = ( id: string) => {
+    window.open(`documents/${id}`, "_blank");
+}
+
 export const DocumentRow = ({document}: DocumentRowProps) => {
 	return (
 		<TableRow className="cursor-pointer ">
@@ -28,9 +33,11 @@ export const DocumentRow = ({document}: DocumentRowProps) => {
                 {format(document._creationTime, "MMM d, yyyy")}
             </TableCell>
             <TableCell className="flex justify-end">
-                <Button variant="ghost" size="icon" className="rounded-full">
-                    <MoreVerticalIcon className="size-4 " />
-                </Button>
+                <DocumentDropdownMenu
+                documentId={document._id}
+                documentTitle={document.title}
+                onNewtab={onNewtabClick}
+                />
             </TableCell>
 		</TableRow>
 	)
