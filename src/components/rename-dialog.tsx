@@ -65,6 +65,7 @@ export const RenameDialog = ({
 							placeholder="Enter new title"
 							name="title"
 							defaultValue={initialTitle}
+							className="selection:bg-blue-500 focus-visible:ring-transparent"
 						/>
 					</div>
 					<DialogFooter>
@@ -74,6 +75,7 @@ export const RenameDialog = ({
 
 						<Button
 							type="submit"
+							className="bg-blue-500"
 							disabled={isUpdating}
 						>
 							{isUpdating ?
