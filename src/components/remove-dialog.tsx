@@ -14,6 +14,7 @@ import {Id} from "../../convex/_generated/dataModel";
 import {useMutation} from "convex/react";
 import {api} from "../../convex/_generated/api";
 import {useState} from "react";
+import {toast} from "sonner";
 import {Loader2} from "lucide-react";
 
 interface RemoveDialogProps {
@@ -27,7 +28,9 @@ export const RemoveDialog = ({documentId, children}: RemoveDialogProps) => {
 		try {
 			setIsRemoving(true);
 			await removeDocument({id: documentId});
+			toast.success("Document deleted successfully!");
 		} catch (error) {
+			toast.error("Failed to delete document");
 			console.error("Failed to delete document:", error);
 		} finally {
 			setIsRemoving(false);

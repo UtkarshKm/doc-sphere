@@ -13,6 +13,7 @@ import {Id} from "../../convex/_generated/dataModel";
 import {useMutation} from "convex/react";
 import {api} from "../../convex/_generated/api";
 import {useState} from "react";
+import {toast} from "sonner";
 import {Loader2} from "lucide-react";
 import {Input} from "./ui/input";
 import {Button} from "./ui/button";
@@ -37,7 +38,9 @@ export const RenameDialog = ({
 			setIsUpdating(true);
 			const title = formData.get("title") as string;
 			await updateDocument({id: documentId, title: title.trim() || "Untitled"});
+			toast.success("Document title updated successfully!");
 		} catch (error) {
+			toast.error("Failed to update document title");
 			console.error("Failed to update document title:", error);
 		} finally {
 			setIsUpdating(false);

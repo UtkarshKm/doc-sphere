@@ -4,6 +4,7 @@ import {NuqsAdapter} from "nuqs/adapters/next/app";
 import "./globals.css";
 import React from "react";
 import {ConvexClientProvider} from "@/components/ConvexClientProvider";
+import {Toaster} from "@/components/ui/sonner";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -20,7 +21,12 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${inter.className} antialiased`}>
-				<NuqsAdapter><ConvexClientProvider>{children}</ConvexClientProvider></NuqsAdapter>
+				<NuqsAdapter>
+					<ConvexClientProvider>
+						{children}
+						<Toaster richColors />
+					</ConvexClientProvider>
+				</NuqsAdapter>
 			</body>
 		</html>
 	);
