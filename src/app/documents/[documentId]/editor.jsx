@@ -20,9 +20,12 @@ import Link from "@tiptap/extension-link";
 import { FontSizeExtension } from "@/extensions/font-size";
 import { LineHightExtension } from "@/extensions/line-hight";
 import Ruler from "./ruler";
+import { useLiveblocksExtension, FloatingToolbar } from "@liveblocks/react-tiptap";
+import { Threads } from "./threads";
 
 export const Editor = () => {
 	const { setEditor, triggerUpdate } = useEditorStore();
+	const liveblocks = useLiveblocksExtension();
 
 	const editor = useEditor({
 		immediatelyRender: false,
@@ -59,8 +62,10 @@ export const Editor = () => {
 			},
 		},
 		extensions: [
+			liveblocks,
 			StarterKit.configure({
 				image: false,
+				history: false,
 			}),
 			FontSizeExtension,
 			LineHightExtension,
@@ -99,6 +104,8 @@ export const Editor = () => {
 			<Ruler />
 			<div className=" min-w-max flex justify-center w-[816px] py-4 print:p-0 print:w-full mx-auto print:min-w-0 ">
 				<EditorContent editor={editor} />
+				<Threads editor={editor} />
+				<FloatingToolbar editor={editor} />
 			</div>
 		</div>
 	);

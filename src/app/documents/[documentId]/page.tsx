@@ -1,12 +1,13 @@
-import { Editor } from "./editor";
-import { Navbar } from "./navbar";
-import { ToolBar } from "./toolbar";
+import {Editor} from "./editor";
+import {Navbar} from "./navbar";
+import { Room } from "./room";
+import {ToolBar} from "./toolbar";
 
 interface DocumentIdProps {
-	params: Promise<{ documentId: string }>;
+	params: Promise<{documentId: string}>;
 }
 
-const DocumentId = async ({ params }: DocumentIdProps) => {
+const DocumentId = async ({params}: DocumentIdProps) => {
 	await params; // Await params but don't use documentId for now
 
 	return (
@@ -17,8 +18,9 @@ const DocumentId = async ({ params }: DocumentIdProps) => {
 					<ToolBar />
 				</div>
 				<div className="pt-[120px] print:pt-0">
-
-					<Editor />
+					<Room>
+						<Editor />
+					</Room>
 				</div>
 			</div>
 		</>
