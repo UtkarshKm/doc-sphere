@@ -1,6 +1,6 @@
 import {Editor} from "./editor";
 import {Navbar} from "./navbar";
-import { Room } from "./room";
+import {Room} from "./room";
 import {ToolBar} from "./toolbar";
 
 interface DocumentIdProps {
@@ -12,17 +12,17 @@ const DocumentId = async ({params}: DocumentIdProps) => {
 
 	return (
 		<>
-			<div className=" min-h-screen bg-[#FAFBFD]">
-				<div className="flex flex-col px-4 pt-2 gap-y-2 fixed top-0 left-0 right-0 z-10 bg-[#FAFBFD] print:hidden">
-					<Navbar />
-					<ToolBar />
-				</div>
-				<div className="pt-[120px] print:pt-0">
-					<Room>
+			<Room>
+				<div className=" min-h-screen bg-[#FAFBFD]">
+					<div className="flex flex-col px-4 pt-2 gap-y-2 fixed top-0 left-0 right-0 z-10 bg-[#FAFBFD] print:hidden">
+						<Navbar />
+						<ToolBar />
+					</div>
+					<div className="pt-[120px] print:pt-0">
 						<Editor />
-					</Room>
+					</div>
 				</div>
-			</div>
+			</Room>
 		</>
 	);
 };
