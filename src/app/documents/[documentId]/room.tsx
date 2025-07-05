@@ -5,17 +5,15 @@ import {
 	LiveblocksProvider,
 	RoomProvider,
 	ClientSideSuspense,
+	useRoom,
 } from "@liveblocks/react/suspense";
 import { useParams } from "next/navigation";
 import { Loader } from "@/components/loader";
 import { getDocuments, getUsers } from "./action";
 import { toast } from "sonner";
 import { Id } from "../../../../convex/_generated/dataModel";
-type Users = {
-	id: string;
-	name: string;
-	avatar: string;
-};
+
+type Users = { id: string; name: string; avatar: string };
 
 export function Room({ children }: { children: ReactNode }) {
 	const params = useParams();
@@ -34,50 +32,59 @@ export function Room({ children }: { children: ReactNode }) {
 		[]
 	);
 
-	useEffect(() => {
-		fetchUsers();
-	}, [fetchUsers]);
 	return (
 		<LiveblocksProvider
 			throttle={16}
 			authEndpoint={async () => {
-				const endpoint = "/api/liveblocks-auth";
-				const room = params.documentId as string;
-				const response = await fetch(endpoint, {
+				const res = await fetch("/api/liveblocks-auth", {
 					method: "POST",
-					body: JSON.stringify({
-						room,
-					}),
+					body: JSON.stringify({ room: params.documentId }),
 				});
-				return await response.json();
+				return res.json();
 			}}
 			resolveMentionSuggestions={({ text }) => {
-				let filteredUsers = users;
-				if (text) {
-					filteredUsers = users.filter((user) =>
-						user.name.toLowerCase().includes(text.toLowerCase())
-					);
-				}
-				return filteredUsers.map((user) => user.id);
+				const filtered =
+					text ?
+						users.filter((u) =>
+							u.name.toLowerCase().includes(text.toLowerCase())
+						)
+					:	users;
+				return filtered.map((u) => u.id);
 			}}
-			resolveRoomsInfo={async({roomIds}) => {
-				const documents = await getDocuments(roomIds as Id<"documents">[]);
-				return documents.map((document) => ({
-					id: document.id,
-					name: document.name,
-				}));
-			}}
-			resolveUsers={({ userIds }) => {
-				return userIds.map((userId) =>
-					users.find((user) => user.id === userId)
-				);
-			}}
+			resolveRoomsInfo={({ roomIds }) =>
+				getDocuments(roomIds as Id<"documents">[]).then((docs) =>
+					docs.map((d) => ({ id: d.id, name: d.name }))
+				)
+			}
+			resolveUsers={({ userIds }) =>
+				userIds.map((id) => users.find((u) => u.id === id))
+			}
 		>
 			<RoomProvider id={params.documentId as string}>
-				<ClientSideSuspense fallback={<Loader label="Room loading" />}>
-					{children}
-				</ClientSideSuspense>
+				<InnerRoom fetchUsers={fetchUsers}>{children}</InnerRoom>
 			</RoomProvider>
 		</LiveblocksProvider>
+	);
+}
+
+function InnerRoom({
+	children,
+	fetchUsers,
+}: {
+	children: ReactNode;
+	fetchUsers: () => Promise<void>;
+}) {
+	const room = useRoom(); // ✅ Enables real-time inbox and notifications
+
+	useEffect(() => {
+		if (room) {
+			void fetchUsers();
+		}
+	}, [fetchUsers, room]);
+
+	return (
+		<ClientSideSuspense fallback={<Loader label="Room loading" />}>
+			{children}
+		</ClientSideSuspense>
 	);
 }
