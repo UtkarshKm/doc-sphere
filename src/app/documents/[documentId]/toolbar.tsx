@@ -734,7 +734,7 @@ const ToolBarButton = ({onclick, isActive, icon: Icon}: ToolBarButtonProps) => {
 export function ToolBar() {
 	const {editor} = useEditorStore();
 
-	console.log("toolbar editor", {editor});
+
 
 	//Object[][]
 	// { ... } defines the object structure
