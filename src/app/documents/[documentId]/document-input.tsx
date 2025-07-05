@@ -39,6 +39,7 @@ export function DocumentInput({ title, id }: DocumentInputProps) {
 		};
 
 		save();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debouncedValue]);
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,15 +56,15 @@ export function DocumentInput({ title, id }: DocumentInputProps) {
 	return (
 		<div className="flex items-center gap-2">
 			<div className="relative w-fit max-w-[50ch]">
-				<span className="invisible whitespace-pre px-1.5 text-lg">{value}</span>
+				<span className="invisible whitespace-pre px-1.5 text-2xl font-medium">{value}</span>
 				<input
 					ref={inputRef}
 					value={value}
 					onChange={onChange}
-					className="absolute inset-0 bg-transparent px-1.5 text-lg text-black truncate"
+					className="absolute inset-0 bg-transparent px-1.5 text-2xl font-medium text-black truncate"
 				/>
 			</div>
-			<BsCloudCheck className={iconClass}  />
+			<BsCloudCheck className={iconClass} />
 		</div>
 	);
 }
