@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import {DocumentInput} from "./document-input";
+import { DocumentInput } from "./document-input";
 import {
 	Menubar,
 	MenubarContent,
@@ -31,18 +31,19 @@ import {
 	StrikethroughIcon,
 	RemoveFormattingIcon,
 } from "lucide-react";
-import {BsFilePdf} from "react-icons/bs";
-import {useEditorStore} from "@/store/use-editor-store";
-import {OrganizationSwitcher, UserButton} from "@clerk/nextjs";
-import {Avatars} from "./avatar";
+import { BsFilePdf } from "react-icons/bs";
+import { useEditorStore } from "@/store/use-editor-store";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { Avatars } from "./avatar";
+import { Inbox } from "./inbox";
 
 export function Navbar() {
-	const {editor} = useEditorStore();
-	const insertTable = ({rows, cols}: {rows: number; cols: number}) => {
+	const { editor } = useEditorStore();
+	const insertTable = ({ rows, cols }: { rows: number; cols: number }) => {
 		editor
 			?.chain()
 			.focus()
-			.insertTable({rows, cols, withHeaderRow: false})
+			.insertTable({ rows, cols, withHeaderRow: false })
 			.run();
 	};
 	const onDownload = (blod: Blob, fileName: string) => {
@@ -56,20 +57,20 @@ export function Navbar() {
 	const onSaveJson = () => {
 		if (!editor) return;
 		const json = editor.getJSON();
-		const blob = new Blob([JSON.stringify(json)], {type: "application/json"});
+		const blob = new Blob([JSON.stringify(json)], { type: "application/json" });
 		onDownload(blob, "document.json"); // TODO: add a file name
 	};
 	const onSaveHtml = () => {
 		if (!editor) return;
 		const html = editor.getHTML();
-		const blob = new Blob([html], {type: "text/html"});
+		const blob = new Blob([html], { type: "text/html" });
 		onDownload(blob, "document.html"); // TODO: add a file name
 	};
 
 	const onSaveText = () => {
 		if (!editor) return;
 		const text = editor.getText();
-		const blob = new Blob([text], {type: "text/plain"});
+		const blob = new Blob([text], { type: "text/plain" });
 		onDownload(blob, "document.txt"); // TODO: add a file name
 	};
 
@@ -187,27 +188,27 @@ export function Navbar() {
 									<MenubarSubTrigger>Table</MenubarSubTrigger>
 									<MenubarSubContent>
 										<MenubarItem
-											onClick={() => insertTable({rows: 1, cols: 1})}
+											onClick={() => insertTable({ rows: 1, cols: 1 })}
 										>
 											1 x 1
 										</MenubarItem>
 										<MenubarItem
-											onClick={() => insertTable({rows: 2, cols: 3})}
+											onClick={() => insertTable({ rows: 2, cols: 3 })}
 										>
 											2 x 3
 										</MenubarItem>
 										<MenubarItem
-											onClick={() => insertTable({rows: 3, cols: 3})}
+											onClick={() => insertTable({ rows: 3, cols: 3 })}
 										>
 											3 x 3
 										</MenubarItem>
 										<MenubarItem
-											onClick={() => insertTable({rows: 4, cols: 3})}
+											onClick={() => insertTable({ rows: 4, cols: 3 })}
 										>
 											4 x 3
 										</MenubarItem>
 										<MenubarItem
-											onClick={() => insertTable({rows: 5, cols: 3})}
+											onClick={() => insertTable({ rows: 5, cols: 3 })}
 										>
 											5 x 3
 										</MenubarItem>
@@ -269,6 +270,7 @@ export function Navbar() {
 
 			<div className="flex gap-3 items-center">
 				<Avatars />
+				<Inbox />
 				<OrganizationSwitcher
 					afterCreateOrganizationUrl="/"
 					afterLeaveOrganizationUrl="/"

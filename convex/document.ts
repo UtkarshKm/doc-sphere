@@ -1,6 +1,22 @@
-import {ConvexError, v} from "convex/values";
-import {mutation, query} from "./_generated/server";
-import {paginationOptsValidator} from "convex/server";
+import { ConvexError, v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
+
+export const getByIds = query({
+	args: { ids: v.array(v.id("documents")) },
+	handler: async (ctx, args) => {
+		const documents = [];
+		for (const id of args.ids) {
+			const document = await ctx.db.get(id);
+			if (document) {
+				documents.push({ id: document._id, name: document.title });
+			} else {
+				documents.push({ id: id, name: "[Removed]" });
+			}
+		}
+		return documents;
+	},
+});
 
 // Mutation to create a new document
 export const createDocument = mutation({
@@ -87,7 +103,7 @@ export const getDocument = query({
 
 // Mutation to delete a document by its ID
 export const deleteDocumentById = mutation({
-	args: {id: v.id("documents")},
+	args: { id: v.id("documents") },
 	handler: async (ctx, args) => {
 		const user = await ctx.auth.getUserIdentity();
 		if (!user) {
@@ -115,7 +131,7 @@ export const deleteDocumentById = mutation({
 
 // Mutation to update a document's title by its ID
 export const updateDocumentById = mutation({
-	args: {id: v.id("documents"), title: v.string()},
+	args: { id: v.id("documents"), title: v.string() },
 	handler: async (ctx, args) => {
 		const user = await ctx.auth.getUserIdentity();
 		if (!user) {
@@ -137,12 +153,12 @@ export const updateDocumentById = mutation({
 			throw new ConvexError("Unauthorized");
 		}
 
-		return await ctx.db.patch(args.id, {title: args.title});
+		return await ctx.db.patch(args.id, { title: args.title });
 	},
 });
 
 export const getDocumentById = query({
-	args: {id: v.id("documents")},
+	args: { id: v.id("documents") },
 	handler: async (ctx, args) => {
 		const document = await ctx.db.get(args.id);
 		if (!document) {
