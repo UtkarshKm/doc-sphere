@@ -38,6 +38,7 @@ export const RenameDialog = ({
 			setIsUpdating(true);
 			const title = formData.get("title") as string;
 			await updateDocument({id: documentId, title: title.trim() || "Untitled"});
+			console.log("call to api")
 			toast.success("Document title updated successfully!");
 		} catch (error) {
 			toast.error("Failed to update document title");

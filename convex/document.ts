@@ -36,12 +36,13 @@ export const createDocument = mutation({
 			| undefined;
 
 		// Insert a new document with the provided title and content, or defaults
-		return await ctx.db.insert("documents", {
+		const id = await ctx.db.insert("documents", {
 			title: args.title ?? "Untitled Document",
 			ownerId: user.subject,
 			initialContent: args.initialContent ?? "",
 			organizationId,
 		});
+		return id;
 	},
 });
 

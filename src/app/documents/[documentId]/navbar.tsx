@@ -36,9 +36,36 @@ import { useEditorStore } from "@/store/use-editor-store";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Avatars } from "./avatar";
 import { Inbox } from "./inbox";
+import { Doc } from "../../../../convex/_generated/dataModel";
+import { useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { RenameDialog } from "@/components/rename-dialog";
+import { RemoveDialog } from "@/components/remove-dialog";
 
-export function Navbar() {
+interface NavbarProps {
+	data: Doc<"documents">;
+}
+
+export function Navbar({ data }: NavbarProps) {
+	const router = useRouter();
 	const { editor } = useEditorStore();
+	const mutation = useMutation(api.document.createDocument);
+
+	const newDocument = async () => {
+		try {
+			const res = await mutation({
+				title: "Untitled Document",
+				initialContent: "",
+			});
+			toast.success("New document created!");
+			router.push(`/documents/${res}`);
+		} catch (error) {
+			toast.error("Failed to create new document.");
+			console.error(error);
+		}
+	};
 	const insertTable = ({ rows, cols }: { rows: number; cols: number }) => {
 		editor
 			?.chain()
@@ -58,20 +85,20 @@ export function Navbar() {
 		if (!editor) return;
 		const json = editor.getJSON();
 		const blob = new Blob([JSON.stringify(json)], { type: "application/json" });
-		onDownload(blob, "document.json"); // TODO: add a file name
+		onDownload(blob, `${data.title}.json`);
 	};
 	const onSaveHtml = () => {
 		if (!editor) return;
 		const html = editor.getHTML();
 		const blob = new Blob([html], { type: "text/html" });
-		onDownload(blob, "document.html"); // TODO: add a file name
+		onDownload(blob, `${data.title}.html`);
 	};
 
 	const onSaveText = () => {
 		if (!editor) return;
 		const text = editor.getText();
 		const blob = new Blob([text], { type: "text/plain" });
-		onDownload(blob, "document.txt"); // TODO: add a file name
+		onDownload(blob, `${data.title}.txt`);
 	};
 
 	return (
@@ -88,7 +115,7 @@ export function Navbar() {
 				</Link>
 
 				<div className="flex flex-col gap-2">
-					<DocumentInput />
+					<DocumentInput title={data.title} id={data._id} />
 					<Menubar className="border-none bg-transparent shadow-none h-auto p-0">
 						<MenubarMenu>
 							<MenubarTrigger className="text-sm font-normal py-0.5 px-[7px] rounded-sm hover:bg-muted h-auto">
@@ -119,19 +146,29 @@ export function Navbar() {
 										</MenubarItem>
 									</MenubarSubContent>
 								</MenubarSub>
-								<MenubarItem>
+								<MenubarItem onClick={newDocument}>
 									<FilePlusIcon className="size-4 mr-2" />
 									New Document
 								</MenubarItem>
 								<MenubarSeparator />
-								<MenubarItem>
-									<FilePenIcon className="size-4 mr-2" />
-									Rename
-								</MenubarItem>
-								<MenubarItem>
-									<TrashIcon className="size-4 mr-2" />
-									Remove
-								</MenubarItem>
+								<RenameDialog documentId={data._id} initialTitle={data.title}>
+									<MenubarItem
+										onClick={(e) => e.stopPropagation()}
+										onSelect={(e) => e.preventDefault()}
+									>
+										<FilePenIcon className="size-4 mr-2" />
+										Rename
+									</MenubarItem>
+								</RenameDialog>
+								<RemoveDialog documentId={data._id}>
+									<MenubarItem
+										onClick={(e) => e.stopPropagation()}
+										onSelect={(e) => e.preventDefault()}
+									>
+										<TrashIcon className="size-4 mr-2" />
+										Remove
+									</MenubarItem>
+								</RemoveDialog>
 								<MenubarSeparator />
 								<MenubarItem onClick={() => window.print()}>
 									<PrinterIcon className="size-4 mr-2" />

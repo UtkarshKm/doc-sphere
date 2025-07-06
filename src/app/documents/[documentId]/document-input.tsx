@@ -21,16 +21,50 @@ export function DocumentInput({ title, id }: DocumentInputProps) {
 	const mutate = useMutation(api.document.updateDocumentById);
 	const isDirty = value !== title;
 
+	// Sync with prop changes (when renamed via dialog)
+	useEffect(() => {
+		setValue(title);
+	}, [title]);
+
+	// useEffect(() => {
+	// 	if (debouncedValue === title) return;
+
+	// 	const save = async () => {
+	// 		setIsSaving(true);
+	// 		setIsError(false);
+	// 		try {
+	// 			await mutate({ id, title: debouncedValue });
+	// 			toast.success("Title saved");
+	// 		} catch {
+	// 			setIsError(true);
+	// 			toast.error("Failed to save title");
+	// 		} finally {
+	// 			setIsSaving(false);
+	// 		}
+	// 	};
+
+	// 	save();
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [debouncedValue]);
+
 	useEffect(() => {
 		if (debouncedValue === title) return;
 
 		const save = async () => {
+			console.log("🚀 API CALL TRIGGERED:", {
+				debouncedValue,
+				title,
+				timestamp: new Date().toISOString(),
+			});
+
 			setIsSaving(true);
 			setIsError(false);
 			try {
 				await mutate({ id, title: debouncedValue });
+				console.log("✅ API CALL SUCCESS:", debouncedValue);
 				toast.success("Title saved");
 			} catch {
+				console.log("❌ API CALL FAILED:", debouncedValue);
 				setIsError(true);
 				toast.error("Failed to save title");
 			} finally {
@@ -39,9 +73,7 @@ export function DocumentInput({ title, id }: DocumentInputProps) {
 		};
 
 		save();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debouncedValue]);
-
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(e.target.value);
 		setDebouncedValue(e.target.value);
@@ -56,7 +88,9 @@ export function DocumentInput({ title, id }: DocumentInputProps) {
 	return (
 		<div className="flex items-center gap-2">
 			<div className="relative w-fit max-w-[50ch]">
-				<span className="invisible whitespace-pre px-1.5 text-2xl font-medium">{value}</span>
+				<span className="invisible whitespace-pre px-1.5 text-2xl font-medium">
+					{value}
+				</span>
 				<input
 					ref={inputRef}
 					value={value}
