@@ -52,12 +52,24 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 		}
 
+		// Generate a unique color from user's name or email
+		const nameForColor = name ?? "Anonymous";
+		const nameToNumber = nameForColor
+			.split("")
+			.reduce((acc, char) => acc + char.charCodeAt(0), 0);
+		const hue = Math.abs(nameToNumber) % 360;
+		const color = `hsl(${hue}, 80%, 60%)`;
+
 		// Prepare a Liveblocks session with user metadata
 		const session = liveblocks.prepareSession(userId, {
 			userInfo: {
 				name: name ?? "Anonymous",
 				avatar: avatar ?? "",
+				color,
 			},
+		});
+		await liveblocks.getOrCreateRoom(room, {
+			defaultAccesses: ["room:write"],
 		});
 
 		// Grant the user full access to the specified room

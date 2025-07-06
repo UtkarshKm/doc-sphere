@@ -13,7 +13,7 @@ import { getDocuments, getUsers } from "./action";
 import { toast } from "sonner";
 import { Id } from "../../../../convex/_generated/dataModel";
 
-type Users = { id: string; name: string; avatar: string };
+type Users = { id: string; name: string; avatar: string ; color: string };
 
 export function Room({ children }: { children: ReactNode }) {
 	const params = useParams();
