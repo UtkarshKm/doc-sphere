@@ -20,12 +20,21 @@ import Link from "@tiptap/extension-link";
 import { FontSizeExtension } from "@/extensions/font-size";
 import { LineHightExtension } from "@/extensions/line-hight";
 import Ruler from "./ruler";
-import { useLiveblocksExtension, FloatingToolbar } from "@liveblocks/react-tiptap";
+import {
+	useLiveblocksExtension,
+	FloatingToolbar,
+} from "@liveblocks/react-tiptap";
 import { Threads } from "./threads";
 
-export const Editor = () => {
+interface EditorProps {
+	initialContent?: string | undefined;
+}
+export const Editor = ({ initialContent }: EditorProps) => {
 	const { setEditor, triggerUpdate } = useEditorStore();
-	const liveblocks = useLiveblocksExtension();
+	const liveblocks = useLiveblocksExtension({
+		initialContent,
+		offlineSupport_experimental: true,
+	});
 
 	const editor = useEditor({
 		immediatelyRender: false,
@@ -55,16 +64,15 @@ export const Editor = () => {
 		},
 
 		editorProps: {
-			style: "padding-left: 56px; padding-right:56px;",
 			attributes: {
 				class:
 					" pr-10 focus:outline-none print:border-0 bg-white border  border-[#c7c7c7] flex flex-col min-h-[1054px] w-[816px] pt-10  pb-10 cursor-text pl-10",
+				style: "padding-left: 56px; padding-right:56px;",
 			},
 		},
 		extensions: [
 			liveblocks,
 			StarterKit.configure({
-				image: false,
 				history: false,
 			}),
 			FontSizeExtension,
@@ -96,7 +104,6 @@ export const Editor = () => {
 				types: ["heading", "paragraph"],
 			}),
 		],
-		content: `hello world`,
 	});
 
 	return (
