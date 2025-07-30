@@ -5,6 +5,8 @@ import {usePaginatedQuery} from "convex/react";
 import {api} from "../../../convex/_generated/api";
 import {DocumentsTable} from "./documents-Table";
 import { useSearchParams } from "@/hooks/use-search-parma";
+import {Footer} from "@/components/footer";
+
 
 function Home() {
 	const [ search] = useSearchParams("search");
@@ -29,6 +31,7 @@ function Home() {
 						loadMore={loadMore}
 					/>
 				</div>
+				<Footer />
 			</div>
 		</>
 	);
